@@ -1,0 +1,6 @@
+{
+  "name": "Ephoto - Digital Image Marketplace",
+  "description": "A professional digital image marketplace to browse, create, sell, demo-purchase, and download high-resolution photos and digital artwork.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

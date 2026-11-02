@@ -1,0 +1,1063 @@
+# PROJECT REQUIREMENT: BUILD A COMPLETE DIGITAL IMAGE SELLING E-COMMERCE PLATFORM
+
+Act as a senior Python Full-Stack Developer, Software Architect, UI/UX Designer, and Database Engineer.
+
+Build a complete, functional, responsive Digital Image Selling E-commerce Website using Python Flask and MySQL.
+
+The application must be developed end to end, with a professional frontend, functional backend, database integration, authentication, image management, shopping cart, order management, and admin dashboard.
+
+IMPORTANT: DO NOT integrate any payment gateway. There must be no Razorpay, Stripe, PayPal, UPI, credit card, payment API, or real-money transaction functionality.
+
+==================================================
+1. PROJECT OVERVIEW
+==================================================
+
+Project Name: PixelMart – Digital Image Marketplace
+
+Project Description:
+
+PixelMart is an online marketplace where users can browse, search, explore, purchase, and download digital images.
+
+The platform allows administrators to upload and manage digital images with titles, descriptions, categories, prices, and preview images.
+
+Registered users can browse the marketplace, add images to their shopping cart, place demo orders without making any actual payment, and download images associated with their completed demo orders.
+
+The application must have two main roles:
+
+1. Customer
+2. Administrator
+
+Customer:
+- Browse images.
+- Search images.
+- View image details.
+- Add images to cart.
+- Remove images from cart.
+- Place demo orders.
+- View order history.
+- Download eligible purchased images.
+- Manage their profile.
+
+Administrator:
+- Access admin dashboard.
+- Upload images.
+- Update image information.
+- Delete images.
+- Manage categories.
+- View registered users.
+- View all orders.
+- Manage order statuses.
+- View sales/order statistics.
+
+==================================================
+2. TECHNOLOGY STACK
+==================================================
+
+Backend:
+- Python
+- Flask
+- Flask Blueprints
+- Flask-SQLAlchemy
+- Flask-Login
+- Flask-WTF for forms and CSRF protection
+
+Frontend:
+- HTML5
+- CSS3
+- JavaScript
+- Bootstrap 5 (only if useful)
+- Jinja2 template engine
+
+Database:
+- MySQL
+- SQLAlchemy ORM
+- PyMySQL or mysqlclient
+
+Security:
+- Werkzeug password hashing
+- CSRF protection
+- Server-side validation
+- Role-based access control
+- Secure session configuration
+
+Image Management:
+- Local server-side image storage
+- Pillow for image processing
+- Secure image upload validation
+
+Development:
+- Git
+- Python virtual environment
+- .env configuration
+
+Do not use React, Angular, Vue, Node.js, or any separate frontend framework. The application must use Flask with HTML, CSS, and JavaScript.
+
+==================================================
+3. PROJECT STRUCTURE
+==================================================
+
+Create a clean, modular, scalable project structure.
+
+Use the Flask application factory pattern and Blueprints.
+
+Suggested structure:
+
+pixelmart/
+│
+├── app/
+│   ├── __init__.py
+│   ├── extensions.py
+│   ├── models.py
+│   ├── decorators.py
+│   │
+│   ├── auth/
+│   │   ├── __init__.py
+│   │   └── routes.py
+│   │
+│   ├── main/
+│   │   ├── __init__.py
+│   │   └── routes.py
+│   │
+│   ├── products/
+│   │   ├── __init__.py
+│   │   └── routes.py
+│   │
+│   ├── cart/
+│   │   ├── __init__.py
+│   │   └── routes.py
+│   │
+│   ├── orders/
+│   │   ├── __init__.py
+│   │   └── routes.py
+│   │
+│   ├── admin/
+│   │   ├── __init__.py
+│   │   └── routes.py
+│   │
+│   ├── api/
+│   │   ├── __init__.py
+│   │   └── routes.py
+│   │
+│   ├── templates/
+│   │   ├── base.html
+│   │   ├── home.html
+│   │   ├── about.html
+│   │   ├── contact.html
+│   │   ├── auth/
+│   │   │   ├── login.html
+│   │   │   └── register.html
+│   │   ├── products/
+│   │   │   ├── listing.html
+│   │   │   └── details.html
+│   │   ├── cart/
+│   │   │   └── cart.html
+│   │   ├── orders/
+│   │   │   ├── checkout.html
+│   │   │   ├── success.html
+│   │   │   └── history.html
+│   │   ├── profile/
+│   │   │   └── profile.html
+│   │   ├── admin/
+│   │   │   ├── dashboard.html
+│   │   │   ├── products.html
+│   │   │   ├── add_product.html
+│   │   │   ├── edit_product.html
+│   │   │   ├── categories.html
+│   │   │   ├── users.html
+│   │   │   └── orders.html
+│   │   └── errors/
+│   │       ├── 403.html
+│   │       ├── 404.html
+│   │       └── 500.html
+│   │
+│   └── static/
+│       ├── css/
+│       │   ├── style.css
+│       │   ├── auth.css
+│       │   ├── products.css
+│       │   └── admin.css
+│       ├── js/
+│       │   ├── main.js
+│       │   ├── cart.js
+│       │   └── validation.js
+│       └── images/
+│
+├── uploads/
+│   ├── originals/
+│   └── previews/
+│
+├── migrations/
+├── tests/
+├── config.py
+├── run.py
+├── requirements.txt
+├── .env.example
+├── .gitignore
+└── README.md
+
+You can improve this structure when necessary, but keep frontend, backend, models, and business logic properly separated.
+
+==================================================
+4. DATABASE DESIGN – MYSQL
+==================================================
+
+Create a normalized relational database named:
+
+pixelmart_db
+
+Create the following tables.
+
+A. USERS TABLE
+
+Columns:
+- id (Primary Key)
+- username
+- email (Unique)
+- password_hash
+- role (admin/customer)
+- profile_image
+- is_active
+- created_at
+- updated_at
+
+Requirements:
+- Unique username and email.
+- Store hashed passwords only.
+- Default role must be customer.
+- Never allow public registration to create an administrator.
+
+B. CATEGORIES TABLE
+
+Columns:
+- id (Primary Key)
+- category_name
+- description
+- created_at
+
+Examples:
+- Nature
+- Technology
+- Animals
+- Architecture
+- Portraits
+- Abstract
+- Wallpapers
+- Travel
+
+C. PRODUCTS TABLE
+
+Columns:
+- id (Primary Key)
+- title
+- description
+- price
+- category_id (Foreign Key)
+- preview_image
+- original_image
+- image_format
+- image_width
+- image_height
+- file_size
+- is_active
+- created_at
+- updated_at
+
+Requirements:
+- Every product must belong to a category.
+- Price must be greater than zero.
+- Store the original image separately from the preview image.
+- Support product availability and visibility.
+
+D. CART_ITEMS TABLE
+
+Columns:
+- id (Primary Key)
+- user_id (Foreign Key)
+- product_id (Foreign Key)
+- quantity
+- created_at
+
+Requirements:
+- A user cannot add the same product multiple times as separate cart entries.
+- Update the existing cart item's quantity if necessary.
+- For digital images, quantity should normally remain 1.
+
+E. ORDERS TABLE
+
+Columns:
+- id (Primary Key)
+- order_number (Unique)
+- user_id (Foreign Key)
+- total_amount
+- order_status
+- checkout_type
+- created_at
+
+F. ORDER_ITEMS TABLE
+
+Columns:
+- id (Primary Key)
+- order_id (Foreign Key)
+- product_id (Foreign Key)
+- product_title
+- unit_price
+- quantity
+- subtotal
+
+Requirements:
+- Preserve the product title and price at the time of ordering.
+- Order history must remain accurate even if a product's price changes later.
+- Use proper foreign keys and relationships.
+
+G. DOWNLOADS TABLE
+
+Columns:
+- id (Primary Key)
+- user_id (Foreign Key)
+- order_item_id (Foreign Key)
+- download_count
+- last_downloaded_at
+- created_at
+
+Requirements:
+- Only authorized customers can download images.
+- Verify that the corresponding order is eligible for downloads.
+- Track download activity.
+
+Define all SQLAlchemy models with appropriate relationships, constraints, indexes, and cascading behavior.
+
+==================================================
+5. USER AUTHENTICATION SYSTEM
+==================================================
+
+Build a complete authentication system.
+
+Registration:
+- Username
+- Email
+- Password
+- Confirm password
+
+Login:
+- Email
+- Password
+- Remember me (optional)
+
+Functional requirements:
+
+1. Validate all fields on the server.
+2. Check duplicate username.
+3. Check duplicate email.
+4. Validate password strength.
+5. Hash passwords using Werkzeug.
+6. Verify hashed passwords during login.
+7. Use Flask-Login for session management.
+8. Implement logout.
+9. Redirect users appropriately after login.
+10. Display success and error messages using Flask flash messages.
+11. Prevent unauthenticated users from accessing protected routes.
+
+Role-based access:
+
+Customer:
+- Access customer pages.
+- Manage own profile.
+- Access own cart.
+- View own orders.
+- Download authorized images.
+
+Admin:
+- Access admin dashboard.
+- Manage products.
+- Manage categories.
+- Manage users.
+- Manage orders.
+
+Create a reusable admin_required decorator.
+
+Do not rely on frontend hiding alone for security. Check permissions on the backend.
+
+==================================================
+6. CUSTOMER-FACING WEBSITE
+==================================================
+
+A. HOME PAGE
+
+Design a modern professional homepage.
+
+Sections:
+
+1. Navbar:
+   - PixelMart logo
+   - Home
+   - Explore
+   - Categories
+   - About
+   - Contact
+   - Login/Register or Profile
+   - Cart icon with item count
+
+2. Hero section:
+   - Attractive heading.
+   - Short description.
+   - Search bar.
+   - Explore Images button.
+   - Attractive background or image composition.
+
+3. Featured categories:
+   - Category image.
+   - Category name.
+   - Number of images.
+
+4. Featured images:
+   - Product preview.
+   - Product title.
+   - Category.
+   - Price.
+   - View Details button.
+   - Add to Cart button.
+
+5. How It Works:
+   - Browse images.
+   - Add to cart.
+   - Place demo order.
+   - Download images.
+
+6. Footer:
+   - About.
+   - Contact.
+   - Privacy policy.
+   - Terms and conditions.
+   - Copyright.
+
+B. IMAGE LISTING PAGE
+
+Display all active images in a responsive grid.
+
+Each image card must contain:
+- Preview image.
+- Image title.
+- Category.
+- Price.
+- View Details button.
+- Add to Cart button.
+
+Implement:
+- Search by title.
+- Filter by category.
+- Minimum and maximum price filters.
+- Sort by newest.
+- Sort by price ascending.
+- Sort by price descending.
+- Pagination.
+- Empty-state message.
+
+C. IMAGE DETAILS PAGE
+
+Display:
+- Large preview image.
+- Image title.
+- Description.
+- Category.
+- Price.
+- Image dimensions.
+- Image format.
+- File size.
+- Add to Cart button.
+- Related images.
+
+IMPORTANT:
+Never expose the original downloadable image through a publicly accessible static URL.
+
+Only show the preview image publicly.
+
+D. CART PAGE
+
+Display:
+- Cart items.
+- Image previews.
+- Product titles.
+- Individual prices.
+- Remove button.
+- Order total.
+- Continue Shopping button.
+- Proceed to Checkout button.
+
+Requirements:
+- Fetch cart items from MySQL.
+- Calculate the total on the backend.
+- Do not trust totals submitted by JavaScript.
+- Validate product availability before checkout.
+
+E. CHECKOUT PAGE – NO PAYMENT
+
+This project must NOT contain any payment gateway.
+
+Build a simulated checkout process.
+
+Display:
+- Order summary.
+- Selected images.
+- Total amount.
+- Place Demo Order button.
+
+When the customer clicks Place Demo Order:
+
+1. Validate the user's login.
+2. Retrieve cart items from the database.
+3. Recalculate the total using current database prices.
+4. Validate all products.
+5. Create a new order.
+6. Create corresponding order items.
+7. Set checkout_type to DEMO.
+8. Set order_status to COMPLETED_DEMO.
+9. Save the order in MySQL using a database transaction.
+10. Clear the user's cart.
+11. Redirect to an order success page.
+
+Display this clear message:
+
+"This is a demonstration order. No payment was collected and no real-money transaction occurred."
+
+Do not call this a paid order.
+
+F. ORDER SUCCESS PAGE
+
+Display:
+- Success message.
+- Order number.
+- Ordered image list.
+- Total amount.
+- Demo order status.
+- Download buttons.
+- View Order History button.
+
+G. ORDER HISTORY PAGE
+
+Display:
+- Order number.
+- Date.
+- Total amount.
+- Order status.
+- View Details button.
+- Download links for eligible items.
+
+H. CUSTOMER PROFILE PAGE
+
+Features:
+- View profile.
+- Update username.
+- Update email with uniqueness validation.
+- Change password.
+- Upload profile image.
+- View order count.
+- View recent orders.
+
+==================================================
+7. ADMIN DASHBOARD
+==================================================
+
+Create a professional admin panel with a separate layout and navigation.
+
+Dashboard statistics:
+
+- Total users.
+- Total products.
+- Total categories.
+- Total orders.
+- Total demo order value.
+- Recent orders.
+- Recently added products.
+- Most popular images.
+
+IMPORTANT:
+Display demo order value separately. Do not represent it as actual revenue or collected money.
+
+A. PRODUCT MANAGEMENT
+
+Admin must be able to:
+
+- Add new image.
+- Edit image.
+- Delete image.
+- Activate/deactivate image.
+- View all products.
+- Search products.
+- Filter by category.
+
+Add Product Form:
+
+- Image title.
+- Description.
+- Category.
+- Price.
+- Original image upload.
+- Preview image upload (optional; generate preview if not provided).
+
+Upload validation:
+- Accept only supported image formats such as JPG, JPEG, PNG and WebP.
+- Verify actual image content.
+- Validate file size.
+- Generate unique server-side filenames.
+- Never trust user-provided filenames.
+- Generate optimized preview images.
+- Store original images securely.
+- Prevent unauthorized file access.
+
+B. CATEGORY MANAGEMENT
+
+- Add category.
+- Edit category.
+- Delete category.
+- View category list.
+- Prevent deleting categories that contain products unless those products are reassigned.
+
+C. USER MANAGEMENT
+
+- View all customers.
+- Search customers.
+- View customer details.
+- Activate/deactivate users.
+- View customer order history.
+
+Prevent administrators from accidentally deleting or disabling their own active account.
+
+D. ORDER MANAGEMENT
+
+- View all orders.
+- Search by order number.
+- Filter by order status.
+- View order details.
+- Update eligible order statuses.
+
+Maintain the distinction between demo orders and real payments.
+
+==================================================
+8. IMAGE STORAGE AND DOWNLOAD SYSTEM
+==================================================
+
+This is one of the most important features.
+
+Implement separate storage for:
+
+1. Original image.
+2. Preview image.
+
+Original images must not be directly accessible through the static folder.
+
+Preview images may be publicly displayed.
+
+Download functionality:
+
+1. Customer clicks Download.
+2. Flask receives the download request.
+3. Check login status.
+4. Find the corresponding order item.
+5. Verify that the order belongs to the logged-in user.
+6. Verify that the order is eligible for downloads.
+7. Retrieve the original image path.
+8. Serve the file using Flask's secure file-serving functionality.
+9. Update the download count and last downloaded timestamp.
+
+Prevent:
+- Downloading another user's images.
+- Downloading without an eligible order.
+- Accessing files using guessed URLs.
+- Path traversal attacks.
+- Unauthorized access to original images.
+
+==================================================
+9. REST API DEVELOPMENT
+==================================================
+
+Create REST API endpoints using Flask.
+
+Authentication:
+- POST /api/auth/register
+- POST /api/auth/login
+- POST /api/auth/logout
+
+Products:
+- GET /api/products
+- GET /api/products/<id>
+- GET /api/categories
+
+Cart:
+- GET /api/cart
+- POST /api/cart
+- PUT /api/cart/<id>
+- DELETE /api/cart/<id>
+
+Orders:
+- GET /api/orders
+- GET /api/orders/<id>
+- POST /api/orders
+
+Admin:
+- POST /api/admin/products
+- PUT /api/admin/products/<id>
+- DELETE /api/admin/products/<id>
+
+API requirements:
+
+- Return JSON responses.
+- Use appropriate HTTP status codes.
+- Validate all request data.
+- Handle invalid IDs.
+- Handle missing fields.
+- Handle unauthorized access.
+- Use consistent error response structures.
+
+For example:
+
+{
+    "success": true,
+    "message": "Product retrieved successfully",
+    "data": {}
+}
+
+The API must use the same underlying database and business logic as the website.
+
+Do not duplicate business logic between the API and normal Flask routes.
+
+==================================================
+10. FRONTEND DESIGN REQUIREMENTS
+==================================================
+
+Create a modern, premium digital marketplace design.
+
+Design direction:
+
+- Clean and minimal.
+- Professional e-commerce layout.
+- High-quality image presentation.
+- Consistent typography.
+- Good spacing.
+- Smooth hover animations.
+- Responsive layouts.
+- Accessible buttons and forms.
+
+Color direction:
+- Primary: Deep black / dark charcoal.
+- Secondary: White.
+- Accent: Modern green or another consistent highlight color.
+- Use subtle borders and shadows.
+- Maintain readable text contrast.
+
+Design all pages consistently.
+
+Responsive support:
+- Desktop.
+- Laptop.
+- Tablet.
+- Mobile.
+
+Additional requirements:
+- Reusable navbar.
+- Reusable footer.
+- Reusable product card.
+- Reusable alert component.
+- Loading states where needed.
+- Empty states.
+- Form validation messages.
+- Confirmation dialog before deletion.
+- Responsive admin sidebar.
+
+Do not create a generic or unfinished-looking interface.
+
+All navigation links and buttons must work.
+
+==================================================
+11. SECURITY REQUIREMENTS
+==================================================
+
+Implement the following security practices:
+
+1. Password hashing.
+2. CSRF protection.
+3. SQL injection prevention through ORM/parameterized queries.
+4. XSS protection using safe template rendering.
+5. Secure session settings.
+6. Server-side input validation.
+7. Role-based authorization.
+8. Secure image uploads.
+9. Protected original image downloads.
+10. Environment variable configuration.
+11. Safe error handling.
+12. Restrict upload file size.
+13. Avoid exposing secret keys.
+14. Validate ownership of cart and order resources.
+15. Use database transactions during order creation.
+
+Never hardcode:
+- Database password.
+- Flask secret key.
+- Production credentials.
+
+Store sensitive configuration in a .env file.
+
+==================================================
+12. FLASK CONCEPTS THAT MUST BE IMPLEMENTED
+==================================================
+
+Ensure the project practically demonstrates these concepts:
+
+1. Flask application initialization.
+2. Application factory pattern.
+3. Project structure.
+4. Blueprints.
+5. Routing.
+6. Dynamic URL parameters.
+7. Query parameters.
+8. GET and POST methods.
+9. PUT and DELETE methods in REST APIs.
+10. Request object.
+11. Response object.
+12. Form data.
+13. JSON data.
+14. Jinja2.
+15. Template inheritance.
+16. Static files.
+17. Redirects.
+18. url_for().
+19. Flash messages.
+20. Cookies and sessions.
+21. Authentication.
+22. Authorization.
+23. File uploads.
+24. File downloads.
+25. Error handling.
+26. Custom decorators.
+27. Flask extensions.
+28. Database integration.
+29. SQLAlchemy ORM.
+30. Database relationships.
+31. Database transactions.
+32. REST APIs.
+33. JSON responses.
+34. Form validation.
+35. Password hashing.
+36. Pagination.
+37. Search and filtering.
+38. Configuration management.
+39. Logging.
+40. Testing and deployment.
+
+==================================================
+13. TESTING REQUIREMENTS
+==================================================
+
+Create test cases for the following:
+
+Authentication:
+- Successful registration.
+- Duplicate email.
+- Duplicate username.
+- Invalid password.
+- Successful login.
+- Incorrect login.
+- Logout.
+
+Products:
+- View products.
+- Search products.
+- Filter by category.
+- View product details.
+- Invalid product ID.
+
+Cart:
+- Add product.
+- Add duplicate product.
+- Remove product.
+- Access another user's cart.
+- Empty cart checkout.
+
+Orders:
+- Successful demo order.
+- Multiple products in an order.
+- Verify correct total calculation.
+- Prevent duplicate or invalid order submissions.
+- Verify cart is cleared after successful order.
+
+Downloads:
+- Authorized download.
+- Unauthorized download.
+- Download without login.
+- Download another user's product.
+- Invalid order ID.
+
+Admin:
+- Admin access.
+- Customer attempting admin access.
+- Product CRUD.
+- Category CRUD.
+- User management.
+
+Use pytest or Flask's built-in testing utilities.
+
+==================================================
+14. INSTALLATION AND EXECUTION
+==================================================
+
+Provide complete setup instructions for Windows.
+
+Include:
+
+1. Python installation requirements.
+2. MySQL installation and setup.
+3. Virtual environment creation.
+4. Dependency installation.
+5. requirements.txt.
+6. .env configuration.
+7. MySQL database creation.
+8. Database migrations.
+9. Initial admin account creation using a secure CLI command.
+10. Sample product seeding.
+11. Running the Flask application.
+12. Testing the application.
+
+Provide the exact commands.
+
+Example:
+
+python -m venv venv
+
+venv\Scripts\activate
+
+pip install -r requirements.txt
+
+flask db upgrade
+
+python run.py
+
+Also provide a sample .env.example file.
+
+==================================================
+15. README DOCUMENTATION
+==================================================
+
+Create a complete README.md containing:
+
+- Project overview.
+- Main features.
+- Technology stack.
+- Project folder structure.
+- Database design.
+- Installation instructions.
+- Environment setup.
+- Database setup.
+- Application execution.
+- Admin account setup.
+- API endpoint documentation.
+- Testing instructions.
+- Screenshots section.
+- Known limitations.
+
+==================================================
+16. DEVELOPMENT WORKFLOW – VERY IMPORTANT
+==================================================
+
+Do not generate a single large, unstructured code file.
+
+Develop the project in phases.
+
+Phase 1: Project initialization and folder structure.
+
+Phase 2: Flask application configuration and MySQL connection.
+
+Phase 3: Database models and migrations.
+
+Phase 4: Registration, login, logout and authorization.
+
+Phase 5: Homepage and product listing.
+
+Phase 6: Product details, search and category filtering.
+
+Phase 7: Admin dashboard and product management.
+
+Phase 8: Shopping cart functionality.
+
+Phase 9: Demo checkout and order creation.
+
+Phase 10: Order history and secure image downloads.
+
+Phase 11: REST API development.
+
+Phase 12: Frontend refinement and responsiveness.
+
+Phase 13: Security implementation and testing.
+
+Phase 14: Documentation and deployment preparation.
+
+For every phase:
+
+1. Explain what will be implemented.
+2. Create the required files.
+3. Write complete working code.
+4. Explain important functions.
+5. Explain database operations.
+6. Provide commands to run.
+7. Test the implemented functionality.
+8. Fix errors before moving forward.
+
+Do not move to the next phase if the current phase is broken.
+
+==================================================
+17. IMPORTANT CODING RULES
+==================================================
+
+- Write complete working code, not pseudocode.
+- Do not leave TODO comments in place of functionality.
+- Do not create nonfunctional buttons or placeholder links.
+- Do not duplicate code unnecessarily.
+- Use reusable functions and modules.
+- Follow Python naming conventions.
+- Keep route handlers clean.
+- Put business logic in appropriate service functions.
+- Use SQLAlchemy models and relationships.
+- Use proper error handling.
+- Use database transactions where necessary.
+- Keep the UI and backend properly connected.
+- Do not hardcode sample product data into the production interface.
+- Use MySQL as the actual application database.
+- Provide seed data only for development/testing.
+- Preserve existing working files if modifying an existing project.
+- Inspect the existing project structure before making changes.
+- Do not overwrite existing configuration without checking it.
+
+==================================================
+18. FINAL ACCEPTANCE CRITERIA
+==================================================
+
+The project is considered complete only when:
+
+1. Flask application runs without errors.
+2. MySQL connection works.
+3. Users can register and log in.
+4. Passwords are securely hashed.
+5. Customers can browse products.
+6. Search and filters work.
+7. Admin can upload and manage images.
+8. Shopping cart works correctly.
+9. Demo checkout creates real database order records.
+10. No payment gateway or real-money payment functionality exists.
+11. Customers can view their order history.
+12. Authorized customers can download original images.
+13. Admin dashboard displays accurate statistics.
+14. REST API endpoints work.
+15. Unauthorized users cannot access protected resources.
+16. All pages are responsive.
+17. Forms have server-side validation.
+18. All navigation and action buttons work.
+19. README and setup instructions are complete.
+20. Application can be installed and run on another Windows PC by following the documentation.
+
+FINAL INSTRUCTION:
+
+Build this as a complete, professional, working Python Flask + MySQL e-commerce project.
+
+Prioritize functionality, security, maintainable architecture, database correctness, and user experience.
+
+Do not integrate any payment gateway.
+
+Start with Phase 1. First inspect the existing workspace, explain the architecture, create the project structure, and then proceed step by step.
